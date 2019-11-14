@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Visualizer : MonoBehaviour {
     private VisualizerObject[] visualizerObjects;
-    private BubbleSort bub;
     private Canvas can;
     //public Color visualizerColor = Color.white;
     [SerializeField]
@@ -19,7 +18,6 @@ public class Visualizer : MonoBehaviour {
     [SerializeField]
     public double sideBuffer = 90;
 
-    bool ready = true;
     public bool paused = false;
     public bool tempUnpaused = false;
 
@@ -38,11 +36,18 @@ public class Visualizer : MonoBehaviour {
     Vector3 algContainerVector;
     public Text algText;
     Vector3 algTextVector;
+    public Text algDescription;
+    Vector3 algDescriptionVector;
     public Button algHalfButton;
     Vector3 algHalfButtonVector;
+    public Button algChangeButton;
+    Vector3 algChangeButtonVector;
     public Text variableText;
     bool half = false;
-    
+
+
+    public delegate List<int> AlgStart(List<int> sortList);
+    public AlgStart algorithmInQuestion;
 
     private void WhiteOutAllBars()
     {
@@ -88,23 +93,26 @@ public class Visualizer : MonoBehaviour {
         initList();
         fixVisualization();
         StartCoroutine(PauseIt());
-        bub = GetComponent<BubbleSort>();
         delayTime = .35f;
         algContainerVector = algContainer.transform.position;
         //textWidth = algText.GetComponent<RectTransform>().rect.width;
         algTextVector = algText.transform.position;
         algHalfButtonVector = algHalfButton.transform.position;
+        algChangeButtonVector = algChangeButton.transform.position;
+        algTextVector = algText.transform.position;
+        algDescription.resizeTextForBestFit = true;
         Debug.Log(beginTime);
 	}
 	
-    public void startBub()
+    public void startAlg()
     {
         paused = false;
-        bub.BubbleSortF(numList);
+        algorithmInQuestion(numList);
     }
 
     private void fixVisualization()
     {
+        //To fix: Delete old bar's text?
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth();
@@ -114,11 +122,12 @@ public class Visualizer : MonoBehaviour {
         for (int i = 0; i < numElements; i++)
         {
             visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
-            currentXLocation += width;
             double ratio = maxHeight / maxNum; // This might be a bit fucked
             height = (int)(ratio * (double)numList[i]);
             visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
             visualizerObjects[i].GetComponent<Image>().enabled = true;
+            visualizerObjects[i].changeNum(numList[i], (float)currentXLocation,30 , (float)width, (float)height);
+            currentXLocation += width;
         }
     }
 
@@ -218,12 +227,25 @@ public class Visualizer : MonoBehaviour {
     public void swapThem(int indexX, int indexY) // Might want to change value in list, maybe it already does that??
     {
         WhiteOutAllBars();
+        int numTemp;
+        numTemp = visualizerObjects[indexX].num;
         Vector2 temp = visualizerObjects[indexX].GetComponent<Image>().rectTransform.sizeDelta;
         visualizerObjects[indexX].GetComponent<Image>().rectTransform.sizeDelta = visualizerObjects[indexY].GetComponent<Image>().rectTransform.sizeDelta;
         visualizerObjects[indexY].GetComponent<Image>().rectTransform.sizeDelta = temp;
+        visualizerObjects[indexX].changeNumHeight(visualizerObjects[indexY].num, visualizerObjects[indexX].GetComponent<Image>().rectTransform.sizeDelta.y);
+        visualizerObjects[indexY].changeNumHeight(numTemp, visualizerObjects[indexY].GetComponent<Image>().rectTransform.sizeDelta.y);
         visualizerObjects[indexX].GetComponent<Image>().color = Color.green;
         visualizerObjects[indexY].GetComponent<Image>().color = Color.green;
         return;        
+    }
+
+    public void assign(int index, int value) // Might want to change value in list, maybe it already does that??
+    {
+        WhiteOutAllBars();
+        numList[index] = value;
+        fixVisualization();
+        visualizerObjects[index].GetComponent<Image>().color = Color.green;
+        return;
     }
 
     public void doNotSwapThem(int indexX, int indexY) // Might want to change value in list, maybe it already does that??
@@ -236,7 +258,7 @@ public class Visualizer : MonoBehaviour {
 
     public void finish()
     {
-        for (int i = 0; i < numElements; i++) visualizerObjects[i].GetComponent<Image>().color = Color.blue;
+        for (int i = 0; i < numElements; i++) visualizerObjects[i].GetComponent<Image>().color = new Color(.01f,.50f,.30f);
         tempUnpaused = false;
         paused = false;
         return;
@@ -271,8 +293,12 @@ public class Visualizer : MonoBehaviour {
         {
             half = true;
             algContainer.transform.position = new Vector3(0, algContainer.transform.position.y);
-            algText.transform.position = new Vector3(Screen.width/2.0f,algText.transform.position.y);
+            algText.transform.position = new Vector3(Screen.width/4.0f,algText.transform.position.y);
             algHalfButton.transform.position = new Vector3((Screen.width/2.0f) - (algHalfButton.GetComponent<RectTransform>().rect.width/2.0f), algHalfButton.transform.position.y);
+            algDescription.enabled = false;
+            //algDescription.transform.position = algText.transform.position;
+            //algChangeButton.transform.position = new Vector3(algHalfButton.transform.position.x, algChangeButton.transform.position.y,0);
+            //algChangeButton.enabled = true;
             fixVisualization();
         }
         else
@@ -281,8 +307,19 @@ public class Visualizer : MonoBehaviour {
             algContainer.transform.position = algContainerVector;
             algText.transform.position = algTextVector;
             algHalfButton.transform.position = algHalfButtonVector;
+            //algChangeButton.transform.position = algChangeButtonVector;
+            //algDescription.transform.position = algDescriptionVector;
+            algDescription.enabled = true;
+            //algChangeButton.enabled = true;
             fixVisualization();
         }
+    }
+
+    public void AlgChangeScreen()
+    {
+        algText.enabled = !algText.enabled;
+        algDescription.enabled = !algDescription.enabled;
+        
     }
     // Update is called once per frame
     void Update() {

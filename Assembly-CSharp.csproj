@@ -62,6 +62,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\BubbleSort.cs" />
+    <Compile Include="Assets\GenericSortingAlg.cs" />
+    <Compile Include="Assets\InsertionSort.cs" />
+    <Compile Include="Assets\MouseTracker.cs" />
     <Compile Include="Assets\Visualizer.cs" />
     <Compile Include="Assets\VisualizerObject.cs" />
     <Reference Include="UnityEditor.StandardEvents">
