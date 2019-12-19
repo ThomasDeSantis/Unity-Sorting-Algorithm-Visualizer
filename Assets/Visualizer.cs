@@ -45,13 +45,18 @@ public class Visualizer : MonoBehaviour {
     public Text variableText;
     bool half = false;
 
+    public bool multipleLists = false;
+    public List<List<int>> lists;
 
     public delegate List<int> AlgStart(List<int> sortList);
     public AlgStart algorithmInQuestion;
 
-    private void WhiteOutAllBars()
+    public int numArrays = 1;
+    public int currentArray = 0;//Current array indexs from 0
+
+    public void WhiteOutAllBars()
     {
-        for (int i = 0; i < numElements; i++) visualizerObjects[i].GetComponent<Image>().color = Color.white;
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().color = Color.white;
     }
 
     public void confirmNumElements()
@@ -110,9 +115,9 @@ public class Visualizer : MonoBehaviour {
         algorithmInQuestion(numList);
     }
 
-    private void fixVisualization()
+    public void fixVisualization()
     {
-        //To fix: Delete old bar's text?
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth();
@@ -131,12 +136,83 @@ public class Visualizer : MonoBehaviour {
         }
     }
 
+    public void fixVisualization(List<int> visList)
+    {
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        double currentXLocation = 0;
+        currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
+        calcWidth(visList);
+        if (half && algContainer.activeInHierarchy) currentXLocation += (Screen.width / 2.0f);
+        maxNum = findMaxNum(visList);
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
+        for (int i = 0; i < visList.Count; i++)
+        {
+            visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+            double ratio = maxHeight / maxNum; // This might be a bit fucked
+            height = (int)(ratio * (double)visList[i]);
+            visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+            visualizerObjects[i].GetComponent<Image>().enabled = true;
+            visualizerObjects[i].changeNum(visList[i], (float)currentXLocation, 30, (float)width, (float)height);
+            currentXLocation += width;
+        }
+    }
+
+    public void fixVisualization(List<List<int>> visLists)
+    {
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        double currentXLocation = 0;
+        int currentImage = 0;
+        currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
+        calcWidth(visLists);
+        if (half && algContainer.activeInHierarchy) currentXLocation += (Screen.width / 2.0f);
+        maxNum = findMaxNum(visLists);
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
+        for (int i = 0; i < visLists.Count; i++)
+        {
+            for(int j = 0; j < visLists[i].Count; j++)
+            {
+                visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+                double ratio = maxHeight / maxNum; // This might be a bit fucked
+                height = (int)(ratio * (double)visLists[i][j]);
+                visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+                visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
+                visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation, 30, (float)width, (float)height);
+                currentXLocation += width;
+                currentImage++;
+            }
+            currentXLocation += sideBuffer;
+        }
+    }
+
     private int findMaxNum()
     {
         int currentMax = numList[0];
         for (int i = 1; i < numElements; i++)
         {
             if (currentMax < numList[i]) currentMax = numList[i];
+        }
+        return currentMax;
+    }
+
+    private int findMaxNum(List<int> visList)
+    {
+        int currentMax = visList[0];
+        for (int i = 1; i < visList.Count; i++)
+        {
+            if (currentMax < visList[i]) currentMax = visList[i];
+        }
+        return currentMax;
+    }
+
+    private int findMaxNum(List<List<int>> visLists)
+    {
+        int currentMax = visLists[0][0];
+        for(int i = 0; i < visLists.Count; i++)
+        {
+            for (int j = 0; j < visLists[i].Count; j++)
+            {
+                if (currentMax < visLists[i][j]) currentMax = visLists[i][j];
+            }
         }
         return currentMax;
     }
@@ -148,6 +224,28 @@ public class Visualizer : MonoBehaviour {
         width = width - (sideBuffer * 2);//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
         width = (width / (double)numElements);
         
+    }
+
+    private void calcWidth(List<int> visList)
+    {
+        if (half && algContainer.activeInHierarchy) width = Screen.width / 2;
+        else { width = Screen.width; }
+        width = width - (sideBuffer * 2);//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
+        width = (width / (double)visList.Count);
+
+    }
+
+    private void calcWidth(List<List<int>> visLists)
+    {
+        int allEls = 0;
+        for (int i = 0; i < visLists.Count; i++)
+        {
+            allEls += visLists[i].Count;
+        }
+        if (half && algContainer.activeInHierarchy) width = Screen.width / 2;
+        else { width = Screen.width; }
+        width = width - (sideBuffer * (2 + (visLists.Count - 1)));//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
+        width = (width / (double)allEls);
     }
 
     public void rerollHeight()
@@ -248,6 +346,21 @@ public class Visualizer : MonoBehaviour {
         return;
     }
 
+    public void assign(int index, List<List<int>> lists) // Might want to change value in list, maybe it already does that??
+    {
+        WhiteOutAllBars();
+        if (currentArray == numArrays)
+        {
+            fixVisualization(lists);
+        }
+        else
+        {
+            fixVisualization(lists[currentArray]);
+        }
+        visualizerObjects[index].GetComponent<Image>().color = Color.green;
+        return;
+    }
+
     public void doNotSwapThem(int indexX, int indexY) // Might want to change value in list, maybe it already does that??
     {
         WhiteOutAllBars();
@@ -299,7 +412,14 @@ public class Visualizer : MonoBehaviour {
             //algDescription.transform.position = algText.transform.position;
             //algChangeButton.transform.position = new Vector3(algHalfButton.transform.position.x, algChangeButton.transform.position.y,0);
             //algChangeButton.enabled = true;
-            fixVisualization();
+            if (multipleLists)
+            {
+                fixVisualization(lists);
+            }
+            else
+            {
+                fixVisualization();
+            }
         }
         else
         {
@@ -311,7 +431,14 @@ public class Visualizer : MonoBehaviour {
             //algDescription.transform.position = algDescriptionVector;
             algDescription.enabled = true;
             //algChangeButton.enabled = true;
-            fixVisualization();
+            if (multipleLists)
+            {
+                fixVisualization(lists);
+            }
+            else
+            {
+                fixVisualization();
+            }
         }
     }
 
@@ -323,6 +450,23 @@ public class Visualizer : MonoBehaviour {
     }
     // Update is called once per frame
     void Update() {
+        if(numArrays > 1)
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                currentArray++;
+                currentArray = currentArray % (numArrays+1);
+                Debug.Log(currentArray);
+                if(currentArray == numArrays)
+                {
+                    fixVisualization(lists);
+                }
+                else
+                {
+                    fixVisualization(lists[currentArray]);
+                }
+            }
+        }
         if (paused)
         {
             return;

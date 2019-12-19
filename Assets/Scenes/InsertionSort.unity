@@ -12513,8 +12513,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 612.6, y: 43}
-  m_SizeDelta: {x: 140.8, y: 86}
+  m_AnchoredPosition: {x: 648, y: 43}
+  m_SizeDelta: {x: 70, y: 86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &591587772
 MonoBehaviour:
@@ -13386,6 +13386,7 @@ MonoBehaviour:
   algHalfButton: {fileID: 591587772}
   algChangeButton: {fileID: 587445837}
   variableText: {fileID: 1907799281}
+  multipleLists: 0
 --- !u!114 &630694605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13397,7 +13398,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38ed65fb88bd957409c6a39e500dd8c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TempStorageList: 
   algVisualizer: {fileID: 0}
+  multipleArrays: 0
+  numArrays: 0
 --- !u!114 &630694606
 MonoBehaviour:
   m_ObjectHideFlags: 0

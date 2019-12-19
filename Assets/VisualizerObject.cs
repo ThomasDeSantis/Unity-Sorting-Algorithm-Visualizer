@@ -20,13 +20,19 @@ public class VisualizerObject : MonoBehaviour {
     {
         numText = GetComponentInChildren<Text>();
         numText.fontSize = 20;
-        Debug.Log(numText.transform.position.x);
+        //Debug.Log(numText.transform.position.x);
         num = newNum;
         numText.transform.position = new Vector3(x, y, 0);
         numText.rectTransform.sizeDelta = new Vector2(sizeX, sizeY);
         numText.text = num.ToString();
         numText.alignment = TextAnchor.MiddleCenter;
         numText.resizeTextForBestFit = true;
+    }
+    public void delNum()
+    {
+        numText = GetComponentInChildren<Text>();
+        numText.text = "";
+
     }
     public void changeNumHeight(int newNum,float sizeY)
     {
