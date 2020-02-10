@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Visualizer : MonoBehaviour {
     private VisualizerObject[] visualizerObjects;
@@ -94,6 +95,40 @@ public class Visualizer : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
+        if (SceneManager.GetActiveScene().name == "Sort")
+        {
+            Debug.Log(SortName.sortMethod);
+            switch (SortName.sortMethod)
+            {
+                case "BubbleSort":
+                    Debug.Log("Wheee im in bubble for some fucking reason");
+                    gameObject.AddComponent<BubbleSort>();
+                    break;
+                case "CocktailSort":
+                    Debug.Log("Yay im in cocktail sort like i should be!!!!!");
+                    gameObject.AddComponent<CocktailSort>();
+                    break;
+                case "CombSort":
+                    gameObject.AddComponent<CombSort>();
+                    break;
+                case "HeapSort":
+                    gameObject.AddComponent<HeapSort>();
+                    break;
+                case "InsertionSort":
+                    gameObject.AddComponent<InsertionSort>();
+                    break;
+                case "Mergesort":
+                    gameObject.AddComponent<Mergesort>();
+                    break;
+                case "QuickSort":
+                    gameObject.AddComponent<QuickSort>();
+                    break;
+                default:
+                    Debug.Log("Incorrect sort method name.");
+                    break;
+
+            }
+        }
         visualizerObjects = GetComponentsInChildren<VisualizerObject>();
         initList();
         fixVisualization();
@@ -450,6 +485,10 @@ public class Visualizer : MonoBehaviour {
     }
     // Update is called once per frame
     void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            SceneManager.LoadScene("Hub", LoadSceneMode.Single);
+        }
         if(numArrays > 1)
         {
             if (Input.GetKeyDown(KeyCode.Tab))

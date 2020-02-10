@@ -6,6 +6,30 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
+    path: Assets/Scenes/BubbleSort.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Hub.unity
+    guid: cdc28b6675f06c64e91b3322cd6a9a67
+  - enabled: 1
+    path: Assets/Scenes/CocktailSort.unity
+    guid: 0d7ee34690602a44aa1f2beef9866b40
+  - enabled: 1
+    path: Assets/Scenes/CombSort.unity
+    guid: 4d84d59803d9db5418abbf91c8bdd0ba
+  - enabled: 1
+    path: Assets/Scenes/HeapSort.unity
+    guid: e0974dc5b8548d04ab48cfaf41794059
+  - enabled: 1
+    path: Assets/Scenes/InsertionSort.unity
+    guid: 01385b16a58cd1d4ea8b3ddeb65c1ff2
+  - enabled: 1
+    path: Assets/Scenes/MergeSort.unity
+    guid: 697e0494a7934764199666edb939be36
+  - enabled: 1
+    path: Assets/Scenes/QuickSort.unity
+    guid: e2e7b50688df6184ab7ec688f7918d0b
+  - enabled: 1
+    path: Assets/Scenes/Sort.unity
+    guid: 9d388e86a6a2d204ba33987de9bbe513
   m_configObjects: {}

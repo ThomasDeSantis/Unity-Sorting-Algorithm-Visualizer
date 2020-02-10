@@ -72,6 +72,8 @@
     <Compile Include="Assets\Mergesort.cs" />
     <Compile Include="Assets\MouseTracker.cs" />
     <Compile Include="Assets\QuickSort.cs" />
+    <Compile Include="Assets\SortInitializer.cs" />
+    <Compile Include="Assets\SortName.cs" />
     <Compile Include="Assets\Visualizer.cs" />
     <Compile Include="Assets\VisualizerObject.cs" />
     <Reference Include="UnityEditor.StandardEvents">

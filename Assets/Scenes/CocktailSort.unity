@@ -3458,21 +3458,16 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Quick Sort:\n\nDescription: This algorithm sorts an unsorted list by first
-    partitioning a list into two different sublists. The size of each sublist is decided
-    by a 'pivot', which in this particular algorithm is always the last element of
-    the sublist. The two sublists are then arranged so all the elements smaller than
-    the pivot are to the left of the sublist, and all elements larger than the pivot
-    are to the right of it. This means the pivot is in the correctly sorted position.
-    This is recursively done to increasingly smaller sublists until the list is completely
-    sorted.\n\nUse: Quick sort is, as its name implies, very quick (on average), and
-    is often the fastest sorting algorithm. In its worst case, however, which is a
-    list reverse sorted with the largest elements to the left of the list, it takes
-    O(n^2) time. The worst case scenario is very rare, however, and generally happens
-    when a poor pivot is chosen. Some versions of the algorithm use randomly chosen
-    pivots to make the worst case less likely.\n\nWorst Case Time Complexity    :
-    O(n^2)\nAverage Case Time Complexity: \u0398(n log n)\nBest Case Time Complexity
-    \     : \u03A9(n log n)\nSpace Complexity                    : O(1)\n\n"
+  m_Text: "Quick Sort:\n\nDescription: This is an algorithm that takes a list of unsorted
+    numbers and sorts them. This particular algorithm is a variant of bubble sort
+    that seeks to solve the problem of turtles. Turtles are small elements at the
+    end of the list and they cause the algorithm to run much slower. With cocktail
+    sort though, as it sorts in both directions alternating, there is no turtle problem.
+    This problem is also addressed in comb sort in a different manner.\n\nUse: Cocktail
+    sort is used in situations where one would want to use bubble sort, as it is essentially
+    an improved bubble sort.\nWorst Case Time Complexity    : O(n^2)\nAverage Case
+    Time Complexity: \u0398(n^2)\nBest Case Time Complexity      : \u03A9(n)\nSpace
+    Complexity                    : O(1)\n\n"
 --- !u!222 &189571912
 CanvasRenderer:
   m_ObjectHideFlags: 0
