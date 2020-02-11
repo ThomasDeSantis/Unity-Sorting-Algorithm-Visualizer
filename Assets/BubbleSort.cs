@@ -9,6 +9,13 @@ public class BubbleSort : GenericSortingAlg{
     {
         algVisualizer = GetComponent<Visualizer>();
         algVisualizer.algorithmInQuestion = BubbleSortF;
+        algVisualizer.algDescription.text = descText;
+        string newAlgFullText = "";
+        for (int k = 0; k < algText.Length; k++)
+        {
+            newAlgFullText += algText[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
     }
 
     public List<int> BubbleSortF(List<int> sortList)
@@ -33,6 +40,10 @@ public class BubbleSort : GenericSortingAlg{
             "   until not swapped\n",
             "end procedure"
         };
+
+    string descText = "Bubble Sort:\nDescription: A sorting algorithm that sorts an unsorted list of elements by comparing each element with the element with the index one larger than itself.By doing this for i - 1 times the list will be sorted by the completion of the algorithm. This particular algorithm can be improved upon by storing how many elements in the list are sorted at the end of the list.\nUse: Simple to implement, albeit inefficient time wise. Space efficient.\nWorst Case Time Complexity    : O(n^2)\nAverage Case Time Complexity: Θ(n^2)\nBest Case Time Complexity      : Ω(n)\n\nSpace Complexity                    : O(1)";
+
+
 
     IEnumerator BubFunc(List<int> sortList)
     {

@@ -10,6 +10,13 @@ public class CocktailSort : GenericSortingAlg
     {
         algVisualizer = GetComponent<Visualizer>();
         algVisualizer.algorithmInQuestion = CocktailSortF;
+        algVisualizer.algDescription.text = descText;
+        string newAlgFullText = "";
+        for (int k = 0; k < algText.Length; k++)
+        {
+            newAlgFullText += algText[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
     }
 
     public List<int> CocktailSortF(List<int> sortList)
@@ -36,6 +43,8 @@ public class CocktailSort : GenericSortingAlg
             "                swap( A[ i ], A[ i + 1 ] )\n",
             "                swapped = true\n"
         };
+
+    string descText = "Cocktail Sort:\n\nDescription: This is an algorithm that takes a list of unsorted numbers and sorts them. This particular algorithm is a variant of bubble sort that seeks to solve the problem of turtles. Turtles are small elements at the end of the list and they cause the algorithm to run much slower. With cocktail sort though, as it sorts in both directions alternating, there is no turtle problem. This problem is also addressed in comb sort in a different manner.\n\nUse: Cocktail sort is used in situations where one would want to use bubble sort, as it is essentially an improved bubble sort.\nWorst Case Time Complexity    : O(n^2)\nAverage Case Time Complexity: Θ(n^2)\nBest Case Time Complexity      : Ω(n)\nSpace Complexity                    : O(1)";
 
     IEnumerator CocktailFunc(List<int> A)
     {

@@ -44,6 +44,7 @@ public class Visualizer : MonoBehaviour {
     public Button algChangeButton;
     Vector3 algChangeButtonVector;
     public Text variableText;
+    public Button PauseButton;
     bool half = false;
 
     public bool multipleLists = false;
@@ -146,7 +147,6 @@ public class Visualizer : MonoBehaviour {
 	
     public void startAlg()
     {
-        paused = false;
         algorithmInQuestion(numList);
     }
 
@@ -347,6 +347,9 @@ public class Visualizer : MonoBehaviour {
     public void setPause()
     {
         paused = !paused;
+        if (paused) PauseButton.GetComponent<Image>().material = (Material)Resources.Load("images/materials/pauseMat", typeof(Material));
+        else PauseButton.GetComponent<Image>().material = (Material)Resources.Load("images/materials/playMat", typeof(Material));
+
     }
 
     public void considerSwapThem(int indexX, int indexY) // Might want to change value in list, maybe it already does that??

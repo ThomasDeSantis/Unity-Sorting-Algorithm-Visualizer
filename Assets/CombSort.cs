@@ -10,6 +10,13 @@ public class CombSort : GenericSortingAlg
     {
         algVisualizer = GetComponent<Visualizer>();
         algVisualizer.algorithmInQuestion = CombSortF;
+        algVisualizer.algDescription.text = descText;
+        string newAlgFullText = "";
+        for (int k = 0; k < algText.Length; k++)
+        {
+            newAlgFullText += algText[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
     }
 
     public List<int> CombSortF(List<int> sortList)
@@ -34,6 +41,8 @@ public class CombSort : GenericSortingAlg
             "                swap(A[i], A[i+gap])\n",
             "                sorted = false\n",
         };
+
+    string descText = "Comb Sort: \n \nDescription: A sorting algorithm that sorts an unsorted list of elements by comparing each element with an element multiple indices away from it. It is a variant of bubble sort designed to solve the problem of turtles, or small elements at the end of a list. Having the gap allows the small elements at the end of the list to be moved to the beginning of the list much quicker. As it iterates through the list the gap size shrinks, and eventually it is sorted. \n \nUse: In a situation where you would want to use a more efficient version of bubble sort. \n \nWorst Case Time Complexity : O(n^2) \nAverage Case Time Complexity: Θ(n^2) \nBest Case Time Complexity : Ω(n log n) \nSpace Complexity : O(1)";
 
     IEnumerator CombSortFunc(List<int> A)
     {

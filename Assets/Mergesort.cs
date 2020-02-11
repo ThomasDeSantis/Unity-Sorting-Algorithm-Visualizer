@@ -15,6 +15,13 @@ public class Mergesort : GenericSortingAlg
         
         algVisualizer = GetComponent<Visualizer>();
         algVisualizer.algorithmInQuestion = MergeSortF;
+        algVisualizer.algDescription.text = descText;
+        string newAlgFullText = "";
+        for (int k = 0; k < algText.Length; k++)
+        {
+            newAlgFullText += algText[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
     }
 
     List<List<int>> lists;
@@ -54,7 +61,7 @@ public class Mergesort : GenericSortingAlg
     "    for i = startI to endI\n",
     "        A[i] = B[i - startI]\n"};
 
-
+    string descText = "Merge Sort: \n \nDescription: Merge sort is a recursive divide and conquer sorting algorithm. Given a list, it will split the list into halves recursively until sublist is only one number long. It keeps track of the beginning and end of the sublists through tracker variables. \n \nAfter this, it continually 'merges' the lists. This means after the two sublists are merged together, and after the function runs, those two sublists will be combined and sorted. It does this until the sublist consists of the entire list of numbers, after which it will be sorted. \n \nUse: Merge sort is useful as it is fairly fast as a sorting algorithm, although not the fastest. It works well to demonstrate a divide and conquer algorithm and is generally fast. One major drawback is that it requires temporary storage, making the space complexity higher than some other algorithms. It has O(n log n) time complexity ensuring it will never run too long, even in its worst case scenario. \n \nWorst Case Time Complexity : O(n log n) \nAverage Case Time Complexity: Θ(n log n) \nBest Case Time Complexity : Ω(n log n) \nSpace Complexity : O(n) ";
 
     IEnumerator MergeFuncStart(List<int> A, int startI, int endI)
     {

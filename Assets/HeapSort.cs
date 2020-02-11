@@ -12,6 +12,13 @@ public class HeapSort : GenericSortingAlg
     {
         algVisualizer = GetComponent<Visualizer>();
         algVisualizer.algorithmInQuestion = HeapSortF;
+        algVisualizer.algDescription.text = descText;
+        string newAlgFullText = "";
+        for (int k = 0; k < algText.Length; k++)
+        {
+            newAlgFullText += algText[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
     }
 
     public List<int> HeapSortF(List<int> sortList)
@@ -46,6 +53,8 @@ public class HeapSort : GenericSortingAlg
         "        swap A[i] with A[largest]\n",
         "        maxHeapify(A,largest)\n"
     };
+
+    string descText = "Heap Sort: \n \nDescription: This algorithm relies on the max heap property to function.It first forms a max heap tree, which is a binary tree where every child of a parent is less than or equal to the parent.This means the largest element is at index 0. After forming the initial tree, the algorithm moves the element at index 0 to the end as it is known to be sorted and subtracts the size of the heap by one, as the new largest last element is now correctly sorted.It reforms the max heap tree making the second element at the head of the tree.This continues until there is only one element left in the tree, which must be the smallest element. After this it is correctly sorted. \n \nUse: Heap sort is used for its efficiency in sorting just about any list.Most of the overhead comes from creating the initial max heap, and after that the list will be arranged so it can be sorted quickly. Because of this heap sort is a useful sorting algorithm. \n \nWorst Case Time Complexity : O(n log n) \nAverage Case Time Complexity: Θ(n log n) \nBest Case Time Complexity : Ω(n log n) \nSpace Complexity : O(1)";
 
     int heapSize;
 

@@ -10,6 +10,13 @@ public class InsertionSort : GenericSortingAlg
     {
         algVisualizer = GetComponent<Visualizer>();
         algVisualizer.algorithmInQuestion = InsertionSortF;
+        algVisualizer.algDescription.text = descText;
+        string newAlgFullText = "";
+        for (int k = 0; k < algTextDescription.Length; k++)
+        {
+            newAlgFullText += algTextDescription[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
     }
 
 
@@ -27,6 +34,7 @@ public class InsertionSort : GenericSortingAlg
             "end procedure\n"
         };
 
+    string descText = "Insertion Sort: \n \nDescription: This algorithm takes an element (in order starting from 1, not 0). It then assumes that the first element is already sorted. It compares the element with the one directly before it. If it is less, it is unsorted and replaces the element before it. It does this until it reaches an element who it is larger than, and at this point the element has become sorted. This causes the array prior to the currently inspected element to be always sorted, and each element being sorted is simply 'inserted' into the correct spot. \n \nUse: It is generally efficient, despite being O(n^2) in the worst case (which is if the list is sorted reversely, with the largest numbers at index 0 and the smallest at the end of the list). However, it is very efficient at sorted already sorted or nearly sorted lists with a best case complexity of Ω(n). This makes it efficient if you are sorting a list which you have just added an element on to, it would do that very quickly. \n \nWorst Case Time Complexity : O(n^2) \nAverage Case Time Complexity: Θ(n^2) \nBest Case Time Complexity : Ω(n) \nSpace Complexity : O(1)";
 
     public List<int> InsertionSortF(List<int> sortList)
     {

@@ -9,6 +9,13 @@ public class QuickSort : GenericSortingAlg {
     {
         algVisualizer = GetComponent<Visualizer>();
         algVisualizer.algorithmInQuestion = QuickSortF;
+        algVisualizer.algDescription.text = descText;
+        string newAlgFullText = "";
+        for (int k = 0; k < algText.Length; k++)
+        {
+            newAlgFullText += algText[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
     }
 
     public List<int> QuickSortF(List<int> sortList)
@@ -35,6 +42,8 @@ public class QuickSort : GenericSortingAlg {
     "    swap A[i] with A[hi]\n",
     "    return i\n"
         };
+
+    string descText = "Quick Sort: \n \nDescription: This algorithm sorts an unsorted list by first partitioning a list into two different sublists. The size of each sublist is decided by a 'pivot', which in this particular algorithm is always the last element of the sublist. The two sublists are then arranged so all the elements smaller than the pivot are to the left of the sublist, and all elements larger than the pivot are to the right of it. This means the pivot is in the correctly sorted position. This is recursively done to increasingly smaller sublists until the list is completely sorted. \n \nUse: Quick sort is, as its name implies, very quick (on average), and is often the fastest sorting algorithm. In its worst case, however, which is a list reverse sorted with the largest elements to the left of the list, it takes O(n^2) time. The worst case scenario is very rare, however, and generally happens when a poor pivot is chosen. Some versions of the algorithm use randomly chosen pivots to make the worst case less likely. \n \nWorst Case Time Complexity : O(n^2) \nAverage Case Time Complexity: Θ(n log n) \nBest Case Time Complexity : Ω(n log n) \nSpace Complexity : O(1) ";
 
     private int pCont = 0;
 
