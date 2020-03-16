@@ -266,5 +266,86 @@ public class Mergesort : GenericSortingAlg
         }
     }
 
+     public static float MergeSortTime(List<int> A, int startI, int endI)
+    {
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        List<int> B = new List<int>(A);
+
+        if (startI < endI)
+        {
+            int middleI = (startI + endI) / 2;
+
+            MergeSortTimeDepth2(A, startI, middleI);
+
+            MergeSortTimeDepth2(A, middleI + 1, endI);
+
+            MergeTime(A, B, startI, middleI, endI);
+        }
+        stopwatch.Stop();
+        return ((stopwatch.ElapsedTicks * 1000000) / System.Diagnostics.Stopwatch.Frequency);//Calculates micro seconds by ticks
+    }
+
+    public static void MergeSortTimeDepth2(List<int> A, int startI, int endI)//So that merge sort wont need to restart the stopwatch
+    {
+        List<int> B = new List<int>(A);
+
+        if (startI < endI)
+        {
+            int middleI = (startI + endI) / 2;
+
+            MergeSortTimeDepth2(A, startI, middleI);
+
+            MergeSortTimeDepth2(A, middleI + 1, endI);
+
+            MergeTime(A, B, startI, middleI, endI);
+        }
+    }
+    public static void MergeTime(List<int> A, List<int> B, int startI, int middleI, int endI)
+    {
+        int i = startI;
+        int j = middleI + 1;
+        int k = 0;
+
+        while (i <= middleI && j <= endI)
+        {
+            if (A[i] <= A[j])
+            {
+                B[k] = A[i];
+
+                k += 1;
+                i += 1;
+            }
+            else
+            {
+                B[k] = A[j];
+
+                k += 1;
+                j += 1;
+            }
+        }
+        while (i <= middleI)
+        {
+            B[k] = A[i];
+
+            k += 1;
+            i += 1;
+        }
+
+        while (j <= endI)
+        {
+            B[k] = A[j];
+
+            k += 1;
+            j += 1;
+        }
+
+        for (i = startI; i <= endI; i += 1)
+        {
+            A[i] = B[i - startI];
+        }
+    }
+
+
 }
 

@@ -46,12 +46,15 @@ public class Visualizer : MonoBehaviour {
     public Text variableText;
     public Button PauseButton;
     bool half = false;
+    public Text comparisonText;
+    public Text speedCompText;
 
     public bool multipleLists = false;
     public List<List<int>> lists;
 
     public delegate List<int> AlgStart(List<int> sortList);
     public AlgStart algorithmInQuestion;
+    List<int> copy;
 
     public int numArrays = 1;
     public int currentArray = 0;//Current array indexs from 0
@@ -147,11 +150,13 @@ public class Visualizer : MonoBehaviour {
 	
     public void startAlg()
     {
+        copy = new List<int>(numList);
         algorithmInQuestion(numList);
     }
 
     public void fixVisualization()
     {
+        
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
@@ -341,6 +346,36 @@ public class Visualizer : MonoBehaviour {
         {
             tempUnpaused = true;
             paused = false;
+        }
+    }
+    bool algView = true;
+    string oldAlgText;
+    public void hitSpeedCompButton()
+    {
+        algView = !algView;
+        if (algView)
+        {
+            algText.text = oldAlgText;
+            if (!half)
+            {
+                algDescription.enabled = true;
+            }
+            //algHalfButton.enabled = true;
+            speedCompText.text = "Speed Comparison";
+        }
+        else
+        {
+            oldAlgText = algText.text;
+            string storageText = "Bubble Sort:{0} μs\nCocktail Sort: {1} μs\nComb Sort: {2} μs\nHeap Sort: {3}" +
+                " μs\nInsertion Sort: {4} μs\nMerge Sort:{5} μs\nQuick Sort:{6} μs\n";
+
+            algText.text = string.Format(storageText, BubbleSort.BubbleSortTime(new List<int>(copy)),
+                CocktailSort.CocktailSortTime(new List<int>(copy)),CombSort.CombSortTime(new List<int>(copy)),
+                HeapSort.HeapSortStartTime(new List<int>(copy)), InsertionSort.InsertionSortTime(new List<int>(copy)),
+                Mergesort.MergeSortTime(new List<int>(copy), 0, copy.Count - 1),QuickSort.QuickSortStartTime(new List<int>(copy), 0, copy.Count - 1));
+            algDescription.enabled = false;
+            //algHalfButton.enabled = false;
+            speedCompText.text = "Algorithm";
         }
     }
 

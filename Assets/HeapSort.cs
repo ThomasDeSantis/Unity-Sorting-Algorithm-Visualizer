@@ -199,6 +199,59 @@ public class HeapSort : GenericSortingAlg
         }
     }
 
+    public static float HeapSortStartTime(List<int> A)
+    {
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        int heapSize = A.Count;
+        
+
+        for (int k = heapSize - 1; k >= 0; k--)
+        {
+            Swap(A, 0, k);
+            heapSize = k;
+            heapSize = MaxHeapifyTime(A, 0,heapSize);
+        }
+
+        stopwatch.Stop();
+        return ((stopwatch.ElapsedTicks * 1000000) / System.Diagnostics.Stopwatch.Frequency);//Calculates micro seconds by ticks,otherwise rounding errors will cause it to equal zero
+
+    }
+
+    static int BuildMaxHeapTime(List<int> A,int heapSize)
+    {
+        for (int i = heapSize / 2 - 1; i >= 0; i--)
+        {
+            heapSize = MaxHeapifyTime(A, i,heapSize);
+        }
+        return heapSize;
+    }
+
+    static int MaxHeapifyTime(List<int> A, int i,int heapSize)
+    {
+        int L = 2 * i + 1;
+
+        int R = 2 * i + 2;
+
+        int largest = i;
+
+        if (L < heapSize && A[L] > A[largest])
+        {
+            largest = L;
+        }
+
+        if (R < heapSize && A[R] > A[largest])
+        {
+            largest = R;
+        }
+
+        if (largest != i)
+        {
+            Swap(A, i, largest);
+            MaxHeapifyTime(A, largest,heapSize);
+        }
+        return heapSize;
+    }
 
 }
 

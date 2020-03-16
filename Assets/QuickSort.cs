@@ -160,4 +160,47 @@ public class QuickSort : GenericSortingAlg {
         if (algVisualizer.algContainer.activeInHierarchy) { yield return new WaitUntil(() => algVisualizer.continueGoing); }
         else { yield return new WaitUntil(() => !algVisualizer.paused); }
     }
+
+    public static float QuickSortStartTime(List<int> sortList, int lo, int hi)
+    {
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        QuickSortTime(sortList, 0, sortList.Count - 1);
+        stopwatch.Stop();
+        return ((stopwatch.ElapsedTicks * 1000000) / System.Diagnostics.Stopwatch.Frequency);//Calculates micro seconds by ticks,otherwise rounding errors will cause it to equal zero
+    }
+
+    static void QuickSortTime(List<int> sortList, int lo, int hi)
+    {
+        if (lo < hi)
+        {
+            int p = partitionTime(sortList, lo, hi);
+            QuickSortTime(sortList, lo, p - 1);
+            QuickSortTime(sortList, p + 1, hi);
+        }
+    }
+
+    static void SwapTime(List<int> sortList, int i1, int i2)
+    {
+        int temp = sortList[i1];
+        sortList[i1] = sortList[i2];
+        sortList[i2] = temp;
+    }
+
+
+    static int partitionTime(List<int> sortList, int lo, int hi)
+    {
+        int pivot = sortList[hi];
+        int i = lo;
+        for (int j = lo; j <= hi; j++)
+        {
+            if (sortList[j] < pivot)
+            {
+                SwapTime(sortList, i, j);
+                i = i + 1;
+            }
+        }
+        SwapTime(sortList, i, hi);
+        return i;//pCont = i
+    }
 }

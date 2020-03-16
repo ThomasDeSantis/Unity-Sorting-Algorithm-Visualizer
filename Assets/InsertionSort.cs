@@ -90,5 +90,27 @@ public class InsertionSort : GenericSortingAlg
         algVisualizer.finish();
     }
 
+    public static float InsertionSortTime(List<int> sortList)
+    {
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+
+        int i = 0, j = 0, key = 0;
+        
+        for (i = 1; i < sortList.Count; i++)
+        {
+            key = sortList[i];
+            j = i - 1;
+            while (j >= 0 && sortList[j] > key)
+            {
+                sortList[j + 1] = sortList[j];
+                j = j - 1;
+            }
+            sortList[j + 1] = key;
+        }
+        stopwatch.Stop();
+        return ((stopwatch.ElapsedTicks * 1000000) / System.Diagnostics.Stopwatch.Frequency);//Calculates micro seconds by ticks,otherwise rounding errors will cause it to equal zero
+    }
+
 }
 

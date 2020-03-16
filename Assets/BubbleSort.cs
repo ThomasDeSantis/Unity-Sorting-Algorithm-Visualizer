@@ -108,4 +108,28 @@ public class BubbleSort : GenericSortingAlg{
         TempStorageList = sortList;// Essentially returns the sorted list to the main function
     }
 
+    public static float BubbleSortTime(List<int> sortList)
+    {
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+
+        int n = sortList.Count;
+        int i = 0;
+        bool swapped = false;
+        do
+        {
+            swapped = false;
+            for (i = 1; i <= n - 1; i++)
+            {
+                if (sortList[i - 1] > sortList[i])
+                {
+                    swapped = true;
+                    Swap(sortList, i - 1, i);
+                }
+            }
+        } while (swapped);
+        stopwatch.Stop();
+        return ((stopwatch.ElapsedTicks * 1000000)/ System.Diagnostics.Stopwatch.Frequency);//Calculates micro seconds by ticks,otherwise rounding errors will cause it to equal zero
+    }
+
 }

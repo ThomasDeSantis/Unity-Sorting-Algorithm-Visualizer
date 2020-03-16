@@ -145,4 +145,42 @@ public class CocktailSort : GenericSortingAlg
         algVisualizer.finish();
     }
 
+    public static float CocktailSortTime(List<int> A)
+    {
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+
+        bool swapped = true;
+
+        while (swapped)
+        {
+            swapped = false;
+            for (int i = 0; i <= A.Count - 2; i++)
+            {
+                if (A[i] > A[i + 1])
+                {
+                    Swap(A, i, i + 1);
+                    swapped = true;
+                }
+            }
+            if (!swapped)
+            {
+                break;
+            }
+
+            swapped = false;
+            for (int i = A.Count - 2; i >= 0; i--)
+            {
+                if (A[i] > A[i + 1])
+                {
+                    Swap(A, i, i + 1);
+                    swapped = true;
+                }
+            }
+        }
+        stopwatch.Stop();
+        return ((stopwatch.ElapsedTicks * 1000000) / System.Diagnostics.Stopwatch.Frequency);//Calculates micro seconds by ticks,otherwise rounding errors will cause it to equal zero
+
+    }
+
 }

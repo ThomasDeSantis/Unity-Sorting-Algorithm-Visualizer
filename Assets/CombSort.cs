@@ -140,4 +140,37 @@ public class CombSort : GenericSortingAlg
         algVisualizer.finish();
     }
 
+    public static float CombSortTime(List<int> A)
+    {
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+
+        int gap = A.Count;
+        float shrink = 1.3f;
+        bool sorted = false;
+
+        while (!sorted)
+        {
+            gap = Mathf.FloorToInt(gap / shrink);
+
+            if (gap <= 1)
+            {
+                gap = 1;
+                sorted = true;
+            }
+            for (int i = 0; i + gap < A.Count; i++)
+            {
+
+                if (A[i] > A[i + gap])
+                {
+                    Swap(A, i, i + gap);
+                    sorted = false;
+                }
+            }
+        }
+        stopwatch.Stop();
+        return ((stopwatch.ElapsedTicks * 1000000) / System.Diagnostics.Stopwatch.Frequency);//Calculates micro seconds by ticks,otherwise rounding errors will cause it to equal zero
+
+    }
+
 }
