@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 public class Visualizer : MonoBehaviour {
@@ -18,6 +19,7 @@ public class Visualizer : MonoBehaviour {
 
     [SerializeField]
     public double sideBuffer = 90;
+    public double innerSideBuffer = 25;
 
     public bool paused = false;
     public bool tempUnpaused = false;
@@ -51,7 +53,8 @@ public class Visualizer : MonoBehaviour {
 
     public bool multipleLists = false;
     public List<List<int>> lists;
-
+    public List<GameObject> textboxes;
+    public bool includeOriginal;
     public delegate List<int> AlgStart(List<int> sortList);
     public AlgStart algorithmInQuestion;
     List<int> copy;
@@ -135,6 +138,7 @@ public class Visualizer : MonoBehaviour {
         }
         visualizerObjects = GetComponentsInChildren<VisualizerObject>();
         initList();
+        includeOriginal = true;
         fixVisualization();
         StartCoroutine(PauseIt());
         delayTime = .35f;
@@ -158,6 +162,7 @@ public class Visualizer : MonoBehaviour {
     {
         
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth();
@@ -179,6 +184,7 @@ public class Visualizer : MonoBehaviour {
     public void fixVisualization(List<int> visList)
     {
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth(visList);
@@ -187,8 +193,9 @@ public class Visualizer : MonoBehaviour {
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visList.Count; i++)
         {
+            //Create the screen buffer
             visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
-            double ratio = maxHeight / maxNum; // This might be a bit fucked
+            double ratio = maxHeight / maxNum; 
             height = (int)(ratio * (double)visList[i]);
             visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
             visualizerObjects[i].GetComponent<Image>().enabled = true;
@@ -197,9 +204,11 @@ public class Visualizer : MonoBehaviour {
         }
     }
 
+    //Used to display given multiple lists
     public void fixVisualization(List<List<int>> visLists)
     {
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
         int currentImage = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
@@ -209,18 +218,71 @@ public class Visualizer : MonoBehaviour {
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visLists.Count; i++)
         {
-            for(int j = 0; j < visLists[i].Count; j++)
+            if (visLists[i].Count != 0)//Only do so on lists with elements
             {
-                visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
-                double ratio = maxHeight / maxNum; // This might be a bit fucked
-                height = (int)(ratio * (double)visLists[i][j]);
-                visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
-                visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
-                visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation, 30, (float)width, (float)height);
-                currentXLocation += width;
-                currentImage++;
+                for (int j = 0; j < visLists[i].Count; j++)
+                {
+                    visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+                    double ratio = maxHeight / maxNum; // This might be a bit fucked
+                    height = (int)(ratio * (double)visLists[i][j]);
+                    visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+                    visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
+                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation, 30, (float)width, (float)height);
+                    currentXLocation += width;
+                    currentImage++;
+                }
+                currentXLocation += innerSideBuffer;
             }
-            currentXLocation += sideBuffer;
+        }
+    }
+
+    //Used to display given multiple lists
+    public void fixVisualization(List<List<int>> visLists, List<string> names)
+    {
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
+        double currentXLocation = 0;
+        int currentImage = 0;
+        int listCount = 0;
+        currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
+        calcWidth(visLists);
+        if (half && algContainer.activeInHierarchy) currentXLocation += (Screen.width / 2.0f);
+        maxNum = findMaxNum(visLists);
+        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
+        for (int i = 0; i < visLists.Count; i++)
+        {
+            if (visLists[i].Count != 0)//Only do so on lists with elements
+            {
+                if (textboxes.Count <= listCount)//May have to mess with this
+                {
+                    textboxes.Add(new GameObject("bottomText"));
+                    textboxes[listCount].transform.SetParent(this.transform);
+                    //textboxes[listCount].AddComponent<RectTransform>();
+                    //textboxes[listCount].AddComponent<CanvasRenderer>();
+                    textboxes[listCount].AddComponent<Text>();
+                    textboxes[listCount].GetComponent<Text>().font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+                    textboxes[listCount].GetComponent<Text>().fontSize = 12;
+                    //textboxes[listCount].GetComponent<Text>().color = Color.white;
+                }
+                double begin = currentXLocation;//Get the beginning to properly place the text
+                for (int j = 0; j < visLists[i].Count; j++)
+                {
+                    visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+                    double ratio = maxHeight / maxNum; // This might be a bit fucked
+                    height = (int)(ratio * (double)visLists[i][j]);
+                    visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+                    visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
+                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation, 30, (float)width, (float)height);
+                    currentXLocation += width;
+                    currentImage++;
+                }
+                double end = currentXLocation;//Get the end to properly place the text
+                currentXLocation += innerSideBuffer;
+                textboxes[listCount].GetComponent<Text>().transform.position = new Vector3((float)((end + begin + innerSideBuffer)/2.0f), 10);
+                textboxes[listCount].GetComponent<Text>().rectTransform.sizeDelta = new Vector2((float)(end - begin + innerSideBuffer), 20.0f);
+                textboxes[listCount].GetComponent<Text>().text = names[i];
+                listCount++;
+            }
         }
     }
 
@@ -278,13 +340,18 @@ public class Visualizer : MonoBehaviour {
     private void calcWidth(List<List<int>> visLists)
     {
         int allEls = 0;
+        int trueCount = 0;
         for (int i = 0; i < visLists.Count; i++)
         {
-            allEls += visLists[i].Count;
+            if(visLists[i].Count != 0)
+            {
+                trueCount++;
+                allEls += visLists[i].Count;
+            }
         }
         if (half && algContainer.activeInHierarchy) width = Screen.width / 2;
         else { width = Screen.width; }
-        width = width - (sideBuffer * (2 + (visLists.Count - 1)));//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
+        width = width - (innerSideBuffer * (2 + (trueCount + 4)));//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
         width = (width / (double)allEls);
     }
 
@@ -325,6 +392,20 @@ public class Visualizer : MonoBehaviour {
                 if (numElements > 250) numElements = 250;
                 numList = new List<int>(numElements);
                 for (int i = 0; i < numElements; i++) numList.Add(int.Parse(elementsString[i]));
+                break;
+            case 4://n+k
+                numList = new List<int>(numElements);
+                for (int i = 0; i < numElements; i++) numList.Add(Random.Range(0, (int)(numElements * .75f)));
+                break;
+            case 5://n+k
+                System.Random rand = new System.Random();
+                List<int> tempList = new List<int>(numElements);
+                for (int i = 0; i < numElements; i++) tempList.Add(i);
+                numList = tempList.OrderBy(x => Random.value).ToList();
+                break;
+            case 6://Tight
+                numList = new List<int>(numElements);
+                for (int i = 0; i < numElements; i++) numList.Add(Random.Range(0, (int)(numElements * .10f)));
                 break;
             default:
                 break;

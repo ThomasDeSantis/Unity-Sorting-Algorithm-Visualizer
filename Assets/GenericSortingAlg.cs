@@ -76,6 +76,7 @@ public class GenericSortingAlg : MonoBehaviour {
 
     //TO DO: Make generic for many lists
     //"considerSwap","swap","doNotSwap","finish","assign"
+    //iList1 is the index of list1
     public void UpdateVisualizer(List<List<int>> lists, string typeOfChange, int indexSwap1,int iList1, int indexSwap2, int iList2, string[] varList, int algLine, string[] algTextDescription)
     {
         actions++;
