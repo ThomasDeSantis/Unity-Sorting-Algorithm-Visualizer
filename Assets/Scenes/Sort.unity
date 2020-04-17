@@ -3918,8 +3918,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -329, y: -38.15}
-  m_SizeDelta: {x: 524, y: 644.4}
+  m_AnchoredPosition: {x: -306.9, y: -38.15}
+  m_SizeDelta: {x: 572.9, y: 644.4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &199864653
 MonoBehaviour:
@@ -13142,6 +13142,7 @@ MonoBehaviour:
   height: 0
   width: 0
   sideBuffer: 90
+  innerSideBuffer: 25
   paused: 0
   tempUnpaused: 0
   continueGoing: 0
@@ -13161,6 +13162,8 @@ MonoBehaviour:
   comparisonText: {fileID: 2054024416}
   speedCompText: {fileID: 1876084255}
   multipleLists: 0
+  textboxes: []
+  includeOriginal: 0
   numArrays: 1
   currentArray: 0
 --- !u!1 &632606931
@@ -23893,8 +23896,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1272.8, y: -49.94}
-  m_SizeDelta: {x: 186.4, y: 100}
+  m_AnchoredPosition: {x: 1272.8, y: -94.1}
+  m_SizeDelta: {x: 186.4, y: 188.2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1151851946
 MonoBehaviour:
@@ -34809,6 +34812,12 @@ MonoBehaviour:
     - m_Text: Right Weighted
       m_Image: {fileID: 0}
     - m_Text: Manual Input
+      m_Image: {fileID: 0}
+    - m_Text: n+k
+      m_Image: {fileID: 0}
+    - m_Text: Even
+      m_Image: {fileID: 0}
+    - m_Text: Tight
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

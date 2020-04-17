@@ -161,4 +161,38 @@ public class GenericSortingAlg : MonoBehaviour {
         algVisualizer.algText.text = newAlgFullText;
     }
 
+    public void UpdateAlgLine(int algLine,int newActions, string[] varList, string[] algTextDescription)
+    {
+        actions += newActions;
+        if (algVisualizer.tempUnpaused && algVisualizer.algContainer.activeInHierarchy)
+        {
+            algVisualizer.tempUnpaused = false;
+            algVisualizer.continueGoing = false;
+            algVisualizer.paused = true;
+        }
+        string compText = "Actions:\n{0}\nAssignments:\n{1}";
+        algVisualizer.comparisonText.text = string.Format(compText, actions, assigns);
+        if (algVisualizer.algContainer.activeInHierarchy) algVisualizer.continueGoing = false;//Need to wait again (if in alg mode;
+        string[] algText = new string[algTextDescription.Length];
+        algTextDescription.CopyTo(algText, 0);
+        if (algVisualizer.algContainer.activeInHierarchy) algVisualizer.changeVariables(varList);
+        if (char.IsWhiteSpace(algText[algLine][0])) algText[algLine].Substring(1);
+        string newAlgFullText = "";
+        for (int k = 0; k < algText.Length; k++)
+        {
+            if (k == algLine)
+            {
+                algText[k] = "<b>" + algText[k] + "</b>";
+            }
+            newAlgFullText += algText[k];
+        }
+        algVisualizer.algText.text = newAlgFullText;
+    }
+
+    public void addActions(int newActions)
+    {
+        actions += newActions;
+    }
+
+
 }

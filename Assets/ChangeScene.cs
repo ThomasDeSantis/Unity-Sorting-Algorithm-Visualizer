@@ -59,5 +59,34 @@ public class ChangeScene : MonoBehaviour {
         SceneManager.LoadScene("Sort", LoadSceneMode.Single);
     }
 
+    public void ShellSwitch()
+    {
+        SortName.sortMethod = "ShellSort";
+        SceneManager.LoadScene("Sort", LoadSceneMode.Single);
+    }
+
+    public void FlashSwitch()
+    {
+        SortName.sortMethod = "FlashSort";
+        SceneManager.LoadScene("Sort", LoadSceneMode.Single);
+    }
+
+    public void BogoSwitch()
+    {
+        SortName.sortMethod = "BogoSort";
+        SceneManager.LoadScene("Sort", LoadSceneMode.Single);
+    }
+
+    public void RadixSwitch()
+    {
+        SortName.sortMethod = "RadixSort";
+        SceneManager.LoadScene("Sort", LoadSceneMode.Single);
+    }
+
+    public void BucketSwitch()
+    {
+        SortName.sortMethod = "BucketSort";
+        SceneManager.LoadScene("Sort", LoadSceneMode.Single);
+    }
 
 }

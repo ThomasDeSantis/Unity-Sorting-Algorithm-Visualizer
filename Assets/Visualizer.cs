@@ -130,10 +130,24 @@ public class Visualizer : MonoBehaviour {
                 case "QuickSort":
                     gameObject.AddComponent<QuickSort>();
                     break;
+                case "ShellSort":
+                    gameObject.AddComponent<ShellSort>();
+                    break;
+                case "FlashSort":
+                    gameObject.AddComponent<FlashSort>();
+                    break;
+                case "BogoSort":
+                    gameObject.AddComponent<BogoSort>();
+                    break;
+                case "RadixSort":
+                    gameObject.AddComponent<RadixSort>();
+                    break;
+                case "BucketSort":
+                    gameObject.AddComponent<BucketSort>();
+                    break;
                 default:
                     Debug.Log("Incorrect sort method name.");
                     break;
-
             }
         }
         visualizerObjects = GetComponentsInChildren<VisualizerObject>();
@@ -448,12 +462,15 @@ public class Visualizer : MonoBehaviour {
         {
             oldAlgText = algText.text;
             string storageText = "Bubble Sort:{0} μs\nCocktail Sort: {1} μs\nComb Sort: {2} μs\nHeap Sort: {3}" +
-                " μs\nInsertion Sort: {4} μs\nMerge Sort:{5} μs\nQuick Sort:{6} μs\n";
+                " μs\nInsertion Sort: {4} μs\nMerge Sort:{5} μs\nQuick Sort:{6} μs\nShell Sort:{7} μs\nFlash Sort:{8} μs" +
+                "\nBucket Sort:{9} μs\nRadix Sort:{10} μs";
 
             algText.text = string.Format(storageText, BubbleSort.BubbleSortTime(new List<int>(copy)),
                 CocktailSort.CocktailSortTime(new List<int>(copy)),CombSort.CombSortTime(new List<int>(copy)),
                 HeapSort.HeapSortStartTime(new List<int>(copy)), InsertionSort.InsertionSortTime(new List<int>(copy)),
-                Mergesort.MergeSortTime(new List<int>(copy), 0, copy.Count - 1),QuickSort.QuickSortStartTime(new List<int>(copy), 0, copy.Count - 1));
+                Mergesort.MergeSortTime(new List<int>(copy), 0, copy.Count - 1),QuickSort.QuickSortStartTime(new List<int>(copy), 0, copy.Count - 1),
+                ShellSort.ShellSortTime(new List<int>(copy)), FlashSort.FlashSortTime(new List<int>(copy)),BucketSort.BucketSortTime(new List<int>(copy),34)
+                , RadixSort.RadixSortTime(new List<int>(copy)));
             algDescription.enabled = false;
             //algHalfButton.enabled = false;
             speedCompText.text = "Algorithm";
@@ -602,6 +619,12 @@ public class Visualizer : MonoBehaviour {
         algDescription.enabled = !algDescription.enabled;
         
     }
+
+    public void changeTextSize(int size)
+    {
+        algText.GetComponent<Text>().fontSize = size;
+    }
+
     // Update is called once per frame
     void Update() {
         if (Input.GetKeyDown(KeyCode.Escape))
