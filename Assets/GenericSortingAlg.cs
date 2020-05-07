@@ -91,16 +91,10 @@ public class GenericSortingAlg : MonoBehaviour {
         algVisualizer.continueGoing = false;//Need to wait again
         switch (typeOfChange)
         {
-            case "considerSwap":
-                algVisualizer.considerSwapThem(indexSwap1, indexSwap2);
-                break;
             case "swap":
                 algVisualizer.swapThem(indexSwap1, indexSwap2);
                 assigns += 2;
                 actions++;
-                break;
-            case "doNotSwap":
-                algVisualizer.doNotSwapThem(indexSwap1, indexSwap2);
                 break;
             case "assign":
                 algVisualizer.assign(indexSwap1, lists);//1 represents the index, 2 represents the value

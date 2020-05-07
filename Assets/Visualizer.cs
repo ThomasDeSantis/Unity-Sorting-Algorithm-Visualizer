@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 
 public class Visualizer : MonoBehaviour {
-    private VisualizerObject[] visualizerObjects;
+    private List<VisualizerObject> visualizerObjects;
     private Canvas can;
     [SerializeField]
     public double maxHeight =  550;
@@ -36,6 +36,7 @@ public class Visualizer : MonoBehaviour {
 
 
     public GameObject algContainer;
+    public GameObject Bar;
     Vector3 algContainerVector;
     public Text algText;
     Vector3 algTextVector;
@@ -70,7 +71,7 @@ public class Visualizer : MonoBehaviour {
 
     public void WhiteOutAllBars()
     {
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().color = Color.white;
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].GetComponent<Image>().color = Color.white;
     }
 
     public void confirmNumElements()
@@ -105,6 +106,7 @@ public class Visualizer : MonoBehaviour {
     {
         numList = new List<int>(numElements);
         for (int i = 0; i < numElements; i++) numList.Add(Random.Range(0, 1000));
+        copy = new List<int>(numList);
     }
     // Use this for initialization
     void Start () {
@@ -158,7 +160,7 @@ public class Visualizer : MonoBehaviour {
         }
         can = GetComponentInParent<Canvas>();
         scaleFactor = can.scaleFactor;
-        visualizerObjects = GetComponentsInChildren<VisualizerObject>();
+        visualizerObjects = new List<VisualizerObject>();
         initList();
         includeOriginal = true;
         fixVisualization();
@@ -176,52 +178,71 @@ public class Visualizer : MonoBehaviour {
 	
     public void startAlg()
     {
-        copy = new List<int>(numList);
         algorithmInQuestion(numList);
     }
 
+    
+    private GameObject genBar()
+    {
+        GameObject temp = GameObject.Instantiate(Bar);
+        temp.transform.SetParent(this.transform);
+        temp.transform.SetAsFirstSibling();
+        return temp;
+    }
+    
     public void fixVisualization()
     {
-        
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        WhiteOutAllBars();
+        Debug.Log(visualizerObjects.Count);
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].delNum();
         for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth();
         if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum();
-        for (int i = 0; i < visualizerObjects.Length;i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
+        for (int i = 0; i < visualizerObjects.Count;i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < numElements; i++)
         {
+            if(visualizerObjects.Count == i)
+            {
+                visualizerObjects.Add(genBar().GetComponent<VisualizerObject>());
+            }
+            Debug.Log(visualizerObjects.Count);
             visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
             double ratio = maxHeight / maxNum; // This might be a bit fucked
             height = (int)(ratio * (double)numList[i]);
-            visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+            visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2(((float)width)*scaleFactor, (float)height);
             visualizerObjects[i].GetComponent<Image>().enabled = true;
-            visualizerObjects[i].changeNum(numList[i], (float)currentXLocation * scaleFactor, 30 , (float)width, (float)height);
+            visualizerObjects[i].changeNum(numList[i], (float)currentXLocation*scaleFactor, 30 , (float)width*scaleFactor, (float)height);
             currentXLocation += width;
         }
     }
 
     public void fixVisualization(List<int> visList)
     {
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        WhiteOutAllBars();
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].delNum();
         for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth(visList);
         if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum(visList);
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visList.Count; i++)
         {
+            if (visualizerObjects.Count < i)
+            {
+                visualizerObjects.Add(genBar().GetComponent<VisualizerObject>());
+            }
             //Create the screen buffer
             visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
             double ratio = maxHeight / maxNum; 
             height = (int)(ratio * (double)visList[i]);
-            visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+            visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width * scaleFactor, (float)height);
             visualizerObjects[i].GetComponent<Image>().enabled = true;
-            visualizerObjects[i].changeNum(visList[i], (float)currentXLocation * scaleFactor, 30, (float)width, (float)height);
+            visualizerObjects[i].changeNum(visList[i], (float)currentXLocation * scaleFactor, 30, (float)width * scaleFactor, (float)height);
             currentXLocation += width;
         }
     }
@@ -229,7 +250,8 @@ public class Visualizer : MonoBehaviour {
     //Used to display given multiple lists
     public void fixVisualization(List<List<int>> visLists)
     {
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        WhiteOutAllBars();
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].delNum();
         for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
         int currentImage = 0;
@@ -237,19 +259,24 @@ public class Visualizer : MonoBehaviour {
         calcWidth(visLists);
         if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum(visLists);
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visLists.Count; i++)
         {
+           
             if (visLists[i].Count != 0)//Only do so on lists with elements
             {
                 for (int j = 0; j < visLists[i].Count; j++)
                 {
+                    if (visualizerObjects.Count == currentImage)
+                    {
+                        visualizerObjects.Add(genBar().GetComponent<VisualizerObject>());
+                    }
                     visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
                     double ratio = maxHeight / maxNum; // This might be a bit fucked
                     height = (int)(ratio * (double)visLists[i][j]);
-                    visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+                    visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width * scaleFactor, (float)height);
                     visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
-                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation * scaleFactor, 30, (float)width, (float)height);
+                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation * scaleFactor, 30, (float)width * scaleFactor, (float)height);
                     currentXLocation += width;
                     currentImage++;
                 }
@@ -261,8 +288,8 @@ public class Visualizer : MonoBehaviour {
     //Used to display given multiple lists
     public void fixVisualization(List<List<int>> visLists, List<string> names)
     {
-        
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
+        WhiteOutAllBars();
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].delNum();
         for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
         int currentImage = 0;
@@ -271,7 +298,7 @@ public class Visualizer : MonoBehaviour {
         calcWidth(visLists);
         if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum(visLists);
-        for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
+        for (int i = 0; i < visualizerObjects.Count; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visLists.Count; i++)
         {
             if (visLists[i].Count != 0)//Only do so on lists with elements
@@ -290,19 +317,23 @@ public class Visualizer : MonoBehaviour {
                 double begin = currentXLocation;//Get the beginning to properly place the text
                 for (int j = 0; j < visLists[i].Count; j++)
                 {
+                    if (visualizerObjects.Count == currentImage)
+                    {
+                        visualizerObjects.Add(genBar().GetComponent<VisualizerObject>());
+                    }
                     visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
                     double ratio = maxHeight / maxNum; // This might be a bit fucked
                     height = (int)(ratio * (double)visLists[i][j]);
-                    visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
+                    visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width * scaleFactor, (float)height);
                     visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
-                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation * scaleFactor, 30, (float)width, (float)height);
+                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation * scaleFactor, 30, (float)width * scaleFactor, (float)height);
                     currentXLocation += width;
                     currentImage++;
                 }
                 double end = currentXLocation;//Get the end to properly place the text
                 currentXLocation += innerSideBuffer;
-                textboxes[listCount].GetComponent<Text>().transform.position = new Vector3(((float)((end + begin + innerSideBuffer)/2.0f)) * scaleFactor, 10);
-                textboxes[listCount].GetComponent<Text>().rectTransform.sizeDelta = new Vector2((float)(end - begin + innerSideBuffer), 20.0f);
+                textboxes[listCount].GetComponent<Text>().transform.position = new Vector3(((float)((end + begin + innerSideBuffer)/2.0f))*scaleFactor, 10);
+                textboxes[listCount].GetComponent<Text>().rectTransform.sizeDelta = new Vector2((float)(end - begin + innerSideBuffer)*scaleFactor, 20.0f);
                 textboxes[listCount].GetComponent<Text>().text = names[i];
                 listCount++;
             }
@@ -434,7 +465,8 @@ public class Visualizer : MonoBehaviour {
             default:
                 break;
         }
-        for (int i = 0; i < numElements; i++) visualizerObjects[i].GetComponent<Image>().color = Color.white;
+        for (int i = 0; i < visualizerObjects.Count; i++)  visualizerObjects[i].GetComponent<Image>().color = Color.white;
+        copy = new List<int>(numList);
         fixVisualization();
     }
 
@@ -495,14 +527,6 @@ public class Visualizer : MonoBehaviour {
 
     }
 
-    public void considerSwapThem(int indexX, int indexY) // Might want to change value in list, maybe it already does that??
-    {
-        WhiteOutAllBars();
-        visualizerObjects[indexX].GetComponent<Image>().color = Color.yellow;
-        visualizerObjects[indexY].GetComponent<Image>().color = Color.yellow;
-        return;
-    }
-
     public void swapThem(int indexX, int indexY) // Might want to change value in list, maybe it already does that??
     {
         WhiteOutAllBars();
@@ -530,6 +554,7 @@ public class Visualizer : MonoBehaviour {
     public void assign(int index, List<List<int>> lists) // Might want to change value in list, maybe it already does that??
     {
         WhiteOutAllBars();
+        Debug.Log(visualizerObjects.Count);
         if (currentArray == numArrays)
         {
             fixVisualization(lists);
@@ -538,15 +563,11 @@ public class Visualizer : MonoBehaviour {
         {
             fixVisualization(lists[currentArray]);
         }
-        visualizerObjects[index].GetComponent<Image>().color = Color.green;
-        return;
-    }
-
-    public void doNotSwapThem(int indexX, int indexY) // Might want to change value in list, maybe it already does that??
-    {
-        WhiteOutAllBars();
-        visualizerObjects[indexX].GetComponent<Image>().color = Color.red;
-        visualizerObjects[indexY].GetComponent<Image>().color = Color.red;
+        Debug.Log(index);
+        if (visualizerObjects.Count > index)
+        {
+            visualizerObjects[index].GetComponent<Image>().color = Color.green;
+        }
         return;
     }
 
