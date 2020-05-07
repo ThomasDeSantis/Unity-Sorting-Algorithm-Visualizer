@@ -89,4 +89,9 @@ public class ChangeScene : MonoBehaviour {
         SceneManager.LoadScene("Sort", LoadSceneMode.Single);
     }
 
+    public void Exit()
+    {
+        Application.Quit();
+    }
+
 }

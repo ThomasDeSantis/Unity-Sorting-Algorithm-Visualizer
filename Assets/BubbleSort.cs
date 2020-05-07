@@ -65,13 +65,11 @@ public class BubbleSort : GenericSortingAlg{
             if (algVisualizer.algContainer.activeInHierarchy) { yield return new WaitUntil(() => algVisualizer.continueGoing); }
             else { yield return new WaitUntil(() => !algVisualizer.paused); }
             swapped = false;
-            UpdateAlgLine(4, new string[] { "n", n.ToString(), "i", i.ToString(), "swapped", swapped.ToString() }, algText);//Go into the for loop
-            if (algVisualizer.algContainer.activeInHierarchy) { yield return new WaitUntil(() => algVisualizer.continueGoing); }
-            else { yield return new WaitUntil(() => !algVisualizer.paused); }
             for (i = 1; i <= n - 1; i++)
             {
-                UpdateVisualizer("considerSwap", i - 1, i, new string[] { "n", n.ToString(), "i", i.ToString(), "swapped", swapped.ToString() }, 5,algText);
-                yield return new WaitUntil(() => algVisualizer.continueGoing);
+                UpdateAlgLine(4, new string[] { "n", n.ToString(), "i", i.ToString(), "swapped", swapped.ToString() }, algText);//Go into the for loop
+                if (algVisualizer.algContainer.activeInHierarchy) { yield return new WaitUntil(() => algVisualizer.continueGoing); }
+                else { yield return new WaitUntil(() => !algVisualizer.paused); }
                 if (sortList[i - 1] > sortList[i])
                 {
                     swapped = true;
@@ -84,14 +82,6 @@ public class BubbleSort : GenericSortingAlg{
                     UpdateAlgLine(8, new string[] { "n", n.ToString(), "i", i.ToString(), "swapped", swapped.ToString() }, algText);//End if
                     if (algVisualizer.algContainer.activeInHierarchy) { yield return new WaitUntil(() => algVisualizer.continueGoing); }
                     else { yield return new WaitUntil(() => !algVisualizer.paused); }
-                    UpdateAlgLine(4, new string[] { "n", n.ToString(), "i", i.ToString(), "swapped", swapped.ToString() }, algText);//Return to the for loop
-                    if (algVisualizer.algContainer.activeInHierarchy) { yield return new WaitUntil(() => algVisualizer.continueGoing); }
-                    else { yield return new WaitUntil(() => !algVisualizer.paused); }
-                }
-                else
-                {
-                    UpdateVisualizer("doNotSwap", i - 1, i, new string[] { "n", n.ToString(), "i", i.ToString(), "swapped", swapped.ToString() }, 4, algText);//Return to for loop
-                    yield return new WaitUntil(() => algVisualizer.continueGoing);
                 }
             }
             UpdateAlgLine(9, new string[] { "n", n.ToString(), "i", i.ToString(), "swapped", swapped.ToString() }, algText);//End for

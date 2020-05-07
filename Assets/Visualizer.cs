@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 public class Visualizer : MonoBehaviour {
     private VisualizerObject[] visualizerObjects;
     private Canvas can;
-    //public Color visualizerColor = Color.white;
     [SerializeField]
     public double maxHeight =  550;
     [SerializeField]
@@ -35,6 +34,7 @@ public class Visualizer : MonoBehaviour {
     public InputField manualInputField;
     public Slider speedSlider;
 
+
     public GameObject algContainer;
     Vector3 algContainerVector;
     public Text algText;
@@ -45,6 +45,7 @@ public class Visualizer : MonoBehaviour {
     Vector3 algHalfButtonVector;
     public Button algChangeButton;
     Vector3 algChangeButtonVector;
+    public Button algButton;
     public Text variableText;
     public Button PauseButton;
     bool half = false;
@@ -58,6 +59,11 @@ public class Visualizer : MonoBehaviour {
     public delegate List<int> AlgStart(List<int> sortList);
     public AlgStart algorithmInQuestion;
     List<int> copy;
+
+    private int screenWidth = 1366;
+    private int screenHeight = 768;
+
+    private float scaleFactor;
 
     public int numArrays = 1;
     public int currentArray = 0;//Current array indexs from 0
@@ -150,6 +156,8 @@ public class Visualizer : MonoBehaviour {
                     break;
             }
         }
+        can = GetComponentInParent<Canvas>();
+        scaleFactor = can.scaleFactor;
         visualizerObjects = GetComponentsInChildren<VisualizerObject>();
         initList();
         includeOriginal = true;
@@ -180,17 +188,17 @@ public class Visualizer : MonoBehaviour {
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth();
-        if (half && algContainer.activeInHierarchy) currentXLocation += (Screen.width / 2.0f);
+        if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum();
         for (int i = 0; i < visualizerObjects.Length;i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < numElements; i++)
         {
-            visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+            visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
             double ratio = maxHeight / maxNum; // This might be a bit fucked
             height = (int)(ratio * (double)numList[i]);
             visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
             visualizerObjects[i].GetComponent<Image>().enabled = true;
-            visualizerObjects[i].changeNum(numList[i], (float)currentXLocation,30 , (float)width, (float)height);
+            visualizerObjects[i].changeNum(numList[i], (float)currentXLocation * scaleFactor, 30 , (float)width, (float)height);
             currentXLocation += width;
         }
     }
@@ -202,18 +210,18 @@ public class Visualizer : MonoBehaviour {
         double currentXLocation = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth(visList);
-        if (half && algContainer.activeInHierarchy) currentXLocation += (Screen.width / 2.0f);
+        if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum(visList);
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visList.Count; i++)
         {
             //Create the screen buffer
-            visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+            visualizerObjects[i].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
             double ratio = maxHeight / maxNum; 
             height = (int)(ratio * (double)visList[i]);
             visualizerObjects[i].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
             visualizerObjects[i].GetComponent<Image>().enabled = true;
-            visualizerObjects[i].changeNum(visList[i], (float)currentXLocation, 30, (float)width, (float)height);
+            visualizerObjects[i].changeNum(visList[i], (float)currentXLocation * scaleFactor, 30, (float)width, (float)height);
             currentXLocation += width;
         }
     }
@@ -227,7 +235,7 @@ public class Visualizer : MonoBehaviour {
         int currentImage = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth(visLists);
-        if (half && algContainer.activeInHierarchy) currentXLocation += (Screen.width / 2.0f);
+        if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum(visLists);
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visLists.Count; i++)
@@ -236,12 +244,12 @@ public class Visualizer : MonoBehaviour {
             {
                 for (int j = 0; j < visLists[i].Count; j++)
                 {
-                    visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+                    visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
                     double ratio = maxHeight / maxNum; // This might be a bit fucked
                     height = (int)(ratio * (double)visLists[i][j]);
                     visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
                     visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
-                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation, 30, (float)width, (float)height);
+                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation * scaleFactor, 30, (float)width, (float)height);
                     currentXLocation += width;
                     currentImage++;
                 }
@@ -253,6 +261,7 @@ public class Visualizer : MonoBehaviour {
     //Used to display given multiple lists
     public void fixVisualization(List<List<int>> visLists, List<string> names)
     {
+        
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].delNum();
         for (int i = 0; i < textboxes.Count; i++) textboxes[i].GetComponent<Text>().text = "";
         double currentXLocation = 0;
@@ -260,7 +269,7 @@ public class Visualizer : MonoBehaviour {
         int listCount = 0;
         currentXLocation += sideBuffer; //Do not count the area set aside for the screen side buffers
         calcWidth(visLists);
-        if (half && algContainer.activeInHierarchy) currentXLocation += (Screen.width / 2.0f);
+        if (half && algContainer.activeInHierarchy) currentXLocation += (screenWidth / 2.0f);
         maxNum = findMaxNum(visLists);
         for (int i = 0; i < visualizerObjects.Length; i++) visualizerObjects[i].GetComponent<Image>().enabled = false; //Disable all of them, assume all will not be used
         for (int i = 0; i < visLists.Count; i++)
@@ -281,24 +290,25 @@ public class Visualizer : MonoBehaviour {
                 double begin = currentXLocation;//Get the beginning to properly place the text
                 for (int j = 0; j < visLists[i].Count; j++)
                 {
-                    visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation, 30);
+                    visualizerObjects[currentImage].GetComponent<Image>().transform.position = new Vector3((float)currentXLocation * scaleFactor, 30);
                     double ratio = maxHeight / maxNum; // This might be a bit fucked
                     height = (int)(ratio * (double)visLists[i][j]);
                     visualizerObjects[currentImage].GetComponent<Image>().rectTransform.sizeDelta = new Vector2((float)width, (float)height);
                     visualizerObjects[currentImage].GetComponent<Image>().enabled = true;
-                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation, 30, (float)width, (float)height);
+                    visualizerObjects[currentImage].changeNum(visLists[i][j], (float)currentXLocation * scaleFactor, 30, (float)width, (float)height);
                     currentXLocation += width;
                     currentImage++;
                 }
                 double end = currentXLocation;//Get the end to properly place the text
                 currentXLocation += innerSideBuffer;
-                textboxes[listCount].GetComponent<Text>().transform.position = new Vector3((float)((end + begin + innerSideBuffer)/2.0f), 10);
+                textboxes[listCount].GetComponent<Text>().transform.position = new Vector3(((float)((end + begin + innerSideBuffer)/2.0f)) * scaleFactor, 10);
                 textboxes[listCount].GetComponent<Text>().rectTransform.sizeDelta = new Vector2((float)(end - begin + innerSideBuffer), 20.0f);
                 textboxes[listCount].GetComponent<Text>().text = names[i];
                 listCount++;
             }
         }
     }
+
 
     private int findMaxNum()
     {
@@ -335,8 +345,8 @@ public class Visualizer : MonoBehaviour {
 
     private void calcWidth()
     {
-        if (half && algContainer.activeInHierarchy) width = Screen.width / 2;
-        else { width = Screen.width; }
+        if (half && algContainer.activeInHierarchy) width = screenWidth / 2;
+        else { width = screenWidth; }
         width = width - (sideBuffer * 2);//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
         width = (width / (double)numElements);
         
@@ -344,8 +354,8 @@ public class Visualizer : MonoBehaviour {
 
     private void calcWidth(List<int> visList)
     {
-        if (half && algContainer.activeInHierarchy) width = Screen.width / 2;
-        else { width = Screen.width; }
+        if (half && algContainer.activeInHierarchy) width = screenWidth / 2;
+        else { width = screenWidth; }
         width = width - (sideBuffer * 2);//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
         width = (width / (double)visList.Count);
 
@@ -363,8 +373,8 @@ public class Visualizer : MonoBehaviour {
                 allEls += visLists[i].Count;
             }
         }
-        if (half && algContainer.activeInHierarchy) width = Screen.width / 2;
-        else { width = Screen.width; }
+        if (half && algContainer.activeInHierarchy) width = screenWidth / 2;
+        else { width = screenWidth; }
         width = width - (innerSideBuffer * (2 + (trueCount + 4)));//Side buffer is the size on each side between the edge of screen and beginning of first/last bar
         width = (width / (double)allEls);
     }
@@ -411,7 +421,7 @@ public class Visualizer : MonoBehaviour {
                 numList = new List<int>(numElements);
                 for (int i = 0; i < numElements; i++) numList.Add(Random.Range(0, (int)(numElements * .75f)));
                 break;
-            case 5://n+k
+            case 5://even
                 System.Random rand = new System.Random();
                 List<int> tempList = new List<int>(numElements);
                 for (int i = 0; i < numElements; i++) tempList.Add(i);
@@ -577,8 +587,8 @@ public class Visualizer : MonoBehaviour {
         {
             half = true;
             algContainer.transform.position = new Vector3(0, algContainer.transform.position.y);
-            algText.transform.position = new Vector3(Screen.width/4.0f,algText.transform.position.y);
-            algHalfButton.transform.position = new Vector3((Screen.width/2.0f) - (algHalfButton.GetComponent<RectTransform>().rect.width/2.0f), algHalfButton.transform.position.y);
+            algText.transform.position = new Vector3(screenWidth / 4.0f,algText.transform.position.y);
+            algHalfButton.transform.position = new Vector3((screenWidth / 2.0f) - (algHalfButton.GetComponent<RectTransform>().rect.width/2.0f), algHalfButton.transform.position.y);
             algDescription.enabled = false;
             //algDescription.transform.position = algText.transform.position;
             //algChangeButton.transform.position = new Vector3(algHalfButton.transform.position.x, algChangeButton.transform.position.y,0);

@@ -25,7 +25,7 @@ public class GenericSortingAlg : MonoBehaviour {
     public bool multipleArrays;
 
 
-    //"considerSwap","swap","doNotSwap","finish","assign"
+    //,"swap", "assign", or "finish"
     public void UpdateVisualizer(string typeOfChange, int indexSwap1, int indexSwap2, string[] varList, int algLine,string[] algTextDescription)
     {
         actions++;
@@ -38,16 +38,10 @@ public class GenericSortingAlg : MonoBehaviour {
         algVisualizer.continueGoing = false;//Need to wait again
         switch (typeOfChange)
         {
-            case "considerSwap":
-                algVisualizer.considerSwapThem(indexSwap1, indexSwap2);
-                break;
             case "swap":
                 algVisualizer.swapThem(indexSwap1, indexSwap2);
                 assigns += 2;
                 actions++;//Swaps count as 2 actions
-                break;
-            case "doNotSwap":
-                algVisualizer.doNotSwapThem(indexSwap1, indexSwap2);
                 break;
             case "assign":
                 algVisualizer.assign(indexSwap1, indexSwap2);//1 represents the index, 2 represents the value

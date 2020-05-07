@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-// en.wikipedia.org/wiki/Bubble_sort
+// https://www.geeksforgeeks.org/comb-sort/
 public class CombSort : GenericSortingAlg
 {
 

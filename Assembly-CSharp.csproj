@@ -59,13 +59,11 @@
      <Compile Include="Assets\ChangeScene.cs" />
      <Compile Include="Assets\CocktailSort.cs" />
      <Compile Include="Assets\CombSort.cs" />
-     <Compile Include="Assets\CountingSort.cs" />
      <Compile Include="Assets\FlashSort.cs" />
      <Compile Include="Assets\GenericSortingAlg.cs" />
      <Compile Include="Assets\HeapSort.cs" />
      <Compile Include="Assets\InsertionSort.cs" />
      <Compile Include="Assets\Mergesort.cs" />
-     <Compile Include="Assets\MouseTracker.cs" />
      <Compile Include="Assets\QuickSort.cs" />
      <Compile Include="Assets\RadixSort.cs" />
      <Compile Include="Assets\ShellSort.cs" />
