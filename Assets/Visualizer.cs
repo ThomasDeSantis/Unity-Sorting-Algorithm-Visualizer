@@ -485,8 +485,10 @@ public class Visualizer : MonoBehaviour {
             paused = false;
         }
     }
+
     bool algView = true;
     string oldAlgText;
+
     public void hitSpeedCompButton()
     {
         algView = !algView;
@@ -608,8 +610,8 @@ public class Visualizer : MonoBehaviour {
         {
             half = true;
             algContainer.transform.position = new Vector3(0, algContainer.transform.position.y);
-            algText.transform.position = new Vector3(screenWidth / 4.0f,algText.transform.position.y);
-            algHalfButton.transform.position = new Vector3((screenWidth / 2.0f) - (algHalfButton.GetComponent<RectTransform>().rect.width/2.0f), algHalfButton.transform.position.y);
+            algText.transform.position = new Vector3((screenWidth / 4.0f)*scaleFactor,algText.transform.position.y);
+            //algHalfButton.transform.position = new Vector3((screenWidth / 2.0f) - (algHalfButton.GetComponent<RectTransform>().rect.width/2.0f), algHalfButton.transform.position.y);
             algDescription.enabled = false;
             //algDescription.transform.position = algText.transform.position;
             //algChangeButton.transform.position = new Vector3(algHalfButton.transform.position.x, algChangeButton.transform.position.y,0);
